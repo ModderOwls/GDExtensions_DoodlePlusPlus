@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://de1liuwb3q8qn"]
+
+[ext_resource type="Texture2D" uid="uid://4w5i66nw5r4" path="res://BoxGuy.png" id="1_7fdr4"]
+[ext_resource type="Texture2D" uid="uid://ny65wbkxvjge" path="res://icon.svg" id="2_okeag"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y7r2v"]
+size = Vector2(100, 20)
+
+[node name="Main" type="Node2D"]
+
+[node name="player_physics" type="player_physics" parent="."]
+gravity = 3.0
+moveSpeed = 1.5
+height = 8.0
+
+[node name="Sprite2D" type="Sprite2D" parent="player_physics"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_7fdr4")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 40)
+shape = SubResource("RectangleShape2D_y7r2v")
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionShape2D"]
+position = Vector2(0, 9.53674e-07)
+scale = Vector2(0.78, 0.155)
+texture = ExtResource("2_okeag")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(55, 40)
+rotation = -0.433376
+shape = SubResource("RectangleShape2D_y7r2v")
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionShape2D2"]
+position = Vector2(0, 9.53674e-07)
+scale = Vector2(0.78, 0.155)
+texture = ExtResource("2_okeag")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(5, 5)
