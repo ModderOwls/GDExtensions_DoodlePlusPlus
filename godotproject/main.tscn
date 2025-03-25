@@ -8,14 +8,12 @@ size = Vector2(100, 20)
 
 [node name="Main" type="Node2D"]
 
-[node name="player_physics" type="player_physics" parent="."]
-topSpeed = 52.0
-gravity = 80.0
-jumpHeight = 80.0
-drag = 150.0
+[node name="Player" type="PlayerPhysics" parent="."]
 
-[node name="Sprite2D" type="Sprite2D" parent="player_physics"]
-position = Vector2(0, -1)
+[node name="TickInterpolation" type="TickInterpolation" parent="Player" node_paths=PackedStringArray("physicsNode")]
+physicsNode = NodePath("..")
+
+[node name="Sprite" type="Sprite2D" parent="Player/TickInterpolation"]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_7fdr4")
 
@@ -33,7 +31,7 @@ scale = Vector2(0.78, 0.155)
 texture = ExtResource("2_okeag")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(74, 3)
+position = Vector2(73, 1)
 shape = SubResource("RectangleShape2D_y7r2v")
 
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionShape2D2"]
@@ -41,5 +39,7 @@ position = Vector2(0, 9.53674e-07)
 scale = Vector2(0.78, 0.155)
 texture = ExtResource("2_okeag")
 
-[node name="Camera" type="Camera2D" parent="."]
+[node name="Camera" type="CameraChaseHandler" parent="." node_paths=PackedStringArray("target_follow")]
+target_follow = NodePath("../Player/TickInterpolation/Sprite")
+lock_x = true
 zoom = Vector2(5, 5)
