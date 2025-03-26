@@ -16,10 +16,10 @@ namespace godot
 
 		Dictionary push_raycast(Vector2 from, Vector2 to);
 
-		float inputLeft = 0;
-		float inputRight = 0;
+		float input_left = 0;
+		float input_right = 0;
 
-		float deltaPhysF;
+		float delta_physics_f;
 
 	protected:
 		static void _bind_methods();
@@ -32,14 +32,14 @@ namespace godot
 		void _physics_process(double delta) override;
 		void _unhandled_input(const Ref<InputEvent> &input) override;
 
-		float inputHorizontal = 0;
+		float input_horizontal = 0;
 
 		Vector2 velocity;
 
 		float acceleration = 640;
-		float topSpeed = 60;
+		float top_speed = 60;
 		float gravity = 80;
-		float jumpHeight = 80;
+		float jump_height = 80;
 		float drag = 150;
 
 		float height = 8;
@@ -47,14 +47,14 @@ namespace godot
 		void set_acceleration(const float new_acceleration);
 		float get_acceleration() const;
 
-		void set_topSpeed(const float new_topSpeed);
-		float get_topSpeed() const;
+		void set_top_speed(const float new_top_speed);
+		float get_top_speed() const;
 
 		void set_gravity(const float new_gravity);
 		float get_gravity() const;
 
-		void set_jumpHeight(const float new_jumpHeight);
-		float get_jumpHeight() const;
+		void set_jump_height(const float new_jump_height);
+		float get_jump_height() const;
 
 		void set_drag(const float new_drag);
 		float get_drag() const;

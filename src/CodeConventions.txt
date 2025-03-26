@@ -1,0 +1,16 @@
+https://www.reddit.com/r/godot/comments/yngda3/gdstyle_naming_convention_and_code_order_cheat/
+
+Summarized from Docs
+Naming Conventions
+Type 	Convention 	Info
+File names 	snake_case 	yaml_parsed.gd
+class_name 	PascalCase 	YAMLParser
+Node names 	PascalCase 	
+Functions 	snake_case 	
+Variables 	snake_case 	
+Signals 	snake_case 	always in past tense "door_opened"
+Constants 	CONSTANT_CASE 	
+enum names 	PascalCase 	
+enum members 	CONSTANT_CASE 	
+
+*Prepend a single underscore (_) to virtual methods functions the user must override, private functions, and private variables: 

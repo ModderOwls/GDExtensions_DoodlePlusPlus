@@ -9,9 +9,6 @@ namespace godot
 	{
 		GDCLASS(CameraChaseHandler, Camera2D)
 
-	private:
-		float deltaPhysF;
-
 	protected:
 		static void _bind_methods();
 

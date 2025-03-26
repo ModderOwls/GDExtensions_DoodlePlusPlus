@@ -7,26 +7,10 @@ using namespace godot;
 
 CameraChaseHandler::CameraChaseHandler() 
 {
-	deltaPhysF = 0;
-
 	offset = Vector2(0, 0);
 }
 
 CameraChaseHandler::~CameraChaseHandler() { }
-
-void CameraChaseHandler::_bind_methods() 
-{	
-	//Export variables to inspector.
-	ClassDB::bind_method(D_METHOD("get_target_follow"), &CameraChaseHandler::get_target_follow);
-	ClassDB::bind_method(D_METHOD("set_target_follow", "new_target_follow"), &CameraChaseHandler::set_target_follow);
-
-	ClassDB::bind_method(D_METHOD("get_lock_x"), &CameraChaseHandler::get_lock_x);
-	ClassDB::bind_method(D_METHOD("set_lock_x", "new_lock_x"), &CameraChaseHandler::set_lock_x);
-
-
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "target_follow", PROPERTY_HINT_NODE_TYPE, "Node2D"), "set_target_follow", "get_target_follow");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "lock_x"), "set_lock_x", "get_lock_x");
-}
 
 
 void CameraChaseHandler::_ready()
@@ -64,6 +48,20 @@ void CameraChaseHandler::_process(double delta)
 	set_position(target_position);
 }
 
+
+void CameraChaseHandler::_bind_methods() 
+{	
+	//Export variables to inspector.
+	ClassDB::bind_method(D_METHOD("get_target_follow"), &CameraChaseHandler::get_target_follow);
+	ClassDB::bind_method(D_METHOD("set_target_follow", "new_target_follow"), &CameraChaseHandler::set_target_follow);
+
+	ClassDB::bind_method(D_METHOD("get_lock_x"), &CameraChaseHandler::get_lock_x);
+	ClassDB::bind_method(D_METHOD("set_lock_x", "new_lock_x"), &CameraChaseHandler::set_lock_x);
+
+
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "target_follow", PROPERTY_HINT_NODE_TYPE, "Node2D"), "set_target_follow", "get_target_follow");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "lock_x"), "set_lock_x", "get_lock_x");
+}
 
 //Target s(g)etters
 void CameraChaseHandler::set_target_follow(Node2D* new_target_follow) { target_follow = new_target_follow; }

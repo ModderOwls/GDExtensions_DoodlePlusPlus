@@ -15,41 +15,12 @@ uint32_t rayMask = 0b01;
 
 PlayerPhysics::PlayerPhysics() 
 {
-	deltaPhysF = 0;
+	delta_physics_f = 0;
 
 	velocity = Vector2(0, 0);
 }
 
 PlayerPhysics::~PlayerPhysics() { }
-
-void PlayerPhysics::_bind_methods() 
-{	
-	//Export variables to inspector.	
-	ClassDB::bind_method(D_METHOD("get_acceleration"), &PlayerPhysics::get_acceleration);
-	ClassDB::bind_method(D_METHOD("set_acceleration", "new_acceleration"), &PlayerPhysics::set_acceleration);
-	
-	ClassDB::bind_method(D_METHOD("get_topSpeed"), &PlayerPhysics::get_topSpeed);
-	ClassDB::bind_method(D_METHOD("set_topSpeed", "new_topSpeed"), &PlayerPhysics::set_topSpeed);
-
-	ClassDB::bind_method(D_METHOD("get_gravity"), &PlayerPhysics::get_gravity);
-	ClassDB::bind_method(D_METHOD("set_gravity", "new_gravity"), &PlayerPhysics::set_gravity);
-
-	ClassDB::bind_method(D_METHOD("get_jumpHeight"), &PlayerPhysics::get_jumpHeight);
-	ClassDB::bind_method(D_METHOD("set_jumpHeight", "new_jumpHeight"), &PlayerPhysics::set_jumpHeight);
-
-	ClassDB::bind_method(D_METHOD("get_drag"), &PlayerPhysics::get_drag);
-	ClassDB::bind_method(D_METHOD("set_drag", "new_drag"), &PlayerPhysics::set_drag);
-
-	ClassDB::bind_method(D_METHOD("get_height"), &PlayerPhysics::get_height);
-	ClassDB::bind_method(D_METHOD("set_height", "new_height"), &PlayerPhysics::set_height);
-
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "acceleration"), "set_acceleration", "get_acceleration");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "topSpeed"), "set_topSpeed", "get_topSpeed");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "gravity"), "set_gravity", "get_gravity");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "jumpHeight"), "set_jumpHeight", "get_jumpHeight");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "drag"), "set_drag", "get_drag");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height"), "set_height", "get_height");
-}
 
 
 void PlayerPhysics::_ready()
@@ -76,26 +47,26 @@ void PlayerPhysics::_ready()
 
 void PlayerPhysics::_physics_process(double delta)
 {
-	deltaPhysF = (float)delta;
+	delta_physics_f = (float)delta;
 
 	movement_air();
 
 	//Update physics.
-	Node2D::set_position(Node2D::get_position() + velocity * deltaPhysF);
+	Node2D::set_position(Node2D::get_position() + velocity * delta_physics_f);
 }
 
 void PlayerPhysics::movement_air()
 {
 	Vector2 position = Node2D::get_position();
 
-	velocity.x += inputHorizontal * acceleration * deltaPhysF;
+	velocity.x += input_horizontal * acceleration * delta_physics_f;
 
     //Apply drag when not holding a direction or standing still.
-    if (inputHorizontal == 0)
+    if (input_horizontal == 0)
     {
         if (velocity.x != 0)
         {
-            float dragDelta = drag * deltaPhysF;
+            float dragDelta = drag * delta_physics_f;
 
 			//Ensure it doesn't push it below zero.
             if (abs(velocity.x) <= dragDelta)
@@ -110,12 +81,12 @@ void PlayerPhysics::movement_air()
     }
 
 	//Cap max speed of player.
-	if (abs(velocity.x) > topSpeed)
+	if (abs(velocity.x) > top_speed)
 	{
-		velocity.x = topSpeed * SIGN(velocity.x);
+		velocity.x = top_speed * SIGN(velocity.x);
 	}
 
-	velocity.y += gravity * deltaPhysF;
+	velocity.y += gravity * delta_physics_f;
 
 	//Perform raycast.
 	Dictionary ray = push_raycast(position, Vector2(0, height / 2 + .1f));
@@ -129,7 +100,7 @@ void PlayerPhysics::movement_air()
 
 void PlayerPhysics::on_floor_hit(Dictionary& ray)
 {
-	velocity.y = -jumpHeight;
+	velocity.y = -jump_height;
 
 	Node2D::set_position((Vector2)ray["position"] + Vector2(0, -1) * height / 2);
 }
@@ -141,28 +112,28 @@ void PlayerPhysics::_unhandled_input(const Ref<InputEvent> &input)
 	//Simple script for more responsive feeling controls for keyboards. Inspired by Snap Tap.
 	if (input->is_action("playerRight"))
 	{
-		inputRight = input->get_action_strength("playerRight");
+		input_right = input->get_action_strength("playerRight");
 
 		if (input->is_pressed())
 		{
-			inputHorizontal = inputRight;
+			input_horizontal = input_right;
 		}
 		else
 		{
-			inputHorizontal = -inputLeft;
+			input_horizontal = -input_left;
 		}
 	}
 	else if (input->is_action("playerLeft"))
 	{
-		inputLeft = input->get_action_strength("playerLeft");
+		input_left = input->get_action_strength("playerLeft");
 		
 		if (input->is_pressed())
 		{
-			inputHorizontal = -inputLeft;
+			input_horizontal = -input_left;
 		}
 		else
 		{
-			inputHorizontal = inputRight;
+			input_horizontal = input_right;
 		}
 	}
 }
@@ -172,25 +143,55 @@ Dictionary PlayerPhysics::push_raycast(const Vector2 from, const Vector2 to)
 	query->set_from(from);
 	query->set_to(from+to);
 
-	return spaceState->intersect_ray(query); //do raycast thingamajig
+	//Do raycast thingamajig
+	return spaceState->intersect_ray(query);
 }
 
+
+void PlayerPhysics::_bind_methods() 
+{	
+	//Export variables to inspector.	
+	ClassDB::bind_method(D_METHOD("get_acceleration"), &PlayerPhysics::get_acceleration);
+	ClassDB::bind_method(D_METHOD("set_acceleration", "new_acceleration"), &PlayerPhysics::set_acceleration);
+	
+	ClassDB::bind_method(D_METHOD("get_top_speed"), &PlayerPhysics::get_top_speed);
+	ClassDB::bind_method(D_METHOD("set_top_speed", "new_top_speed"), &PlayerPhysics::set_top_speed);
+
+	ClassDB::bind_method(D_METHOD("get_gravity"), &PlayerPhysics::get_gravity);
+	ClassDB::bind_method(D_METHOD("set_gravity", "new_gravity"), &PlayerPhysics::set_gravity);
+
+	ClassDB::bind_method(D_METHOD("get_jump_height"), &PlayerPhysics::get_jump_height);
+	ClassDB::bind_method(D_METHOD("set_jump_height", "new_jump_height"), &PlayerPhysics::set_jump_height);
+
+	ClassDB::bind_method(D_METHOD("get_drag"), &PlayerPhysics::get_drag);
+	ClassDB::bind_method(D_METHOD("set_drag", "new_drag"), &PlayerPhysics::set_drag);
+
+	ClassDB::bind_method(D_METHOD("get_height"), &PlayerPhysics::get_height);
+	ClassDB::bind_method(D_METHOD("set_height", "new_height"), &PlayerPhysics::set_height);
+
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "acceleration"), "set_acceleration", "get_acceleration");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "top_speed"), "set_top_speed", "get_top_speed");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "gravity"), "set_gravity", "get_gravity");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "jump_height"), "set_jump_height", "get_jump_height");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "drag"), "set_drag", "get_drag");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height"), "set_height", "get_height");
+}
 
 //MoveSpeed s(g)etters
 void PlayerPhysics::set_acceleration(const float new_acceleration) { acceleration = new_acceleration; }
 float PlayerPhysics::get_acceleration() const { return acceleration; }
 
 //TopSpeed s(g)etters
-void PlayerPhysics::set_topSpeed(const float new_topSpeed) { topSpeed = new_topSpeed; }
-float PlayerPhysics::get_topSpeed() const { return topSpeed; }
+void PlayerPhysics::set_top_speed(const float new_top_speed) { top_speed = new_top_speed; }
+float PlayerPhysics::get_top_speed() const { return top_speed; }
 
 //Gravity s(g)etters
 void PlayerPhysics::set_gravity(const float new_gravity) { gravity = new_gravity; }
 float PlayerPhysics::get_gravity() const { return gravity; }
 
-//JumpHeight s(g)etters
-void PlayerPhysics::set_jumpHeight(const float new_jumpHeight) { jumpHeight = new_jumpHeight; }
-float PlayerPhysics::get_jumpHeight() const { return jumpHeight; }
+//Jump height s(g)etters
+void PlayerPhysics::set_jump_height(const float new_jump_height) { jump_height = new_jump_height; }
+float PlayerPhysics::get_jump_height() const { return jump_height; }
 
 //Drag s(g)etters
 void PlayerPhysics::set_drag(const float new_drag) { drag = new_drag; }

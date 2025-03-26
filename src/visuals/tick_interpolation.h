@@ -10,7 +10,7 @@ namespace godot
 		GDCLASS(TickInterpolation, Node2D)
 
 		private:
-			Vector2 lastPosition;
+			Vector2 last_position;
 
 			Engine *engine;
 
@@ -25,9 +25,9 @@ namespace godot
 			void _process(double delta) override;
 			void _physics_process(double delta) override;
 
-			Node2D* physicsNode;
+			Node2D* physics_node;
 
-			void set_physicsNode(Node2D* new_physicsNode);
-			Node2D* get_physicsNode() const;
+			void set_physics_node(Node2D* new_physics_node);
+			Node2D* get_physics_node() const;
 	};
 }
