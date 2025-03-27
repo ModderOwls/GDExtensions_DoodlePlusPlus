@@ -1,7 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://g115xvx0q5sc"]
+[gd_scene load_steps=8 format=3 uid="uid://g115xvx0q5sc"]
 
 [ext_resource type="PackedScene" uid="uid://de1liuwb3q8qn" path="res://Scenes/main.tscn" id="1_ecl6f"]
+[ext_resource type="AudioStream" uid="uid://dhp020380ayu1" path="res://Sounds/Music.wav" id="1_lm07j"]
+[ext_resource type="AudioStream" uid="uid://ttq1g7e8trmj" path="res://Sounds/Jump.wav" id="2_lnr8v"]
 [ext_resource type="Theme" uid="uid://5a1r28ad85yq" path="res://ThemeUI.tres" id="2_qt4gd"]
+[ext_resource type="AudioStream" uid="uid://cxv1v1444qtko" path="res://Sounds/Start.wav" id="3_6eeal"]
+[ext_resource type="AudioStream" uid="uid://cvea8k541jyrl" path="res://Sounds/Death.wav" id="4_cm2rf"]
+[ext_resource type="AudioStream" uid="uid://bkddkmbpr627f" path="res://Sounds/Win.wav" id="5_xabam"]
 
 [node name="GameView" type="Control"]
 layout_mode = 3
@@ -10,6 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -21,8 +27,18 @@ grow_vertical = 2
 color = Color(0.82, 0.82, 0.492, 1)
 
 [node name="ScoreManager" type="ScoreManager" parent="." node_paths=PackedStringArray("timer_label")]
-win_amount = 5.0
-timer_label = NodePath("../TopBar/TimerLabel")
+win_amount = 500.0
+timer_label = NodePath("../Times/TimerLabel")
+
+[node name="SoundManager" type="SoundManager" parent="."]
+music = ExtResource("1_lm07j")
+sound_library = {
+"Death": ExtResource("4_cm2rf"),
+"Jump": ExtResource("2_lnr8v"),
+"Start": ExtResource("3_6eeal"),
+"Win": ExtResource("5_xabam")
+}
+process_priority = -100
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 1
@@ -36,6 +52,7 @@ offset_bottom = -576.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(5, 5)
+mouse_filter = 2
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 disable_3d = true
@@ -44,15 +61,19 @@ canvas_item_default_texture_filter = 0
 size = Vector2i(120, 144)
 render_target_update_mode = 4
 
-[node name="Main" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_ecl6f")]
+[node name="RestartHandling" type="RestartHandler" parent="SubViewportContainer/SubViewport"]
+restart_node = ExtResource("1_ecl6f")
 
-[node name="Screens" type="Control" parent="."]
+[node name="Screens" type="ScreenHandler" parent="." node_paths=PackedStringArray("screen_game_over", "screen_win")]
+screen_game_over = NodePath("GameOver")
+screen_win = NodePath("Win")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="GameOver" type="Control" parent="Screens"]
 visible = false
@@ -62,6 +83,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="ColorRect" type="ColorRect" parent="Screens/GameOver"]
 layout_mode = 1
@@ -88,6 +110,7 @@ offset_right = 106.5
 offset_bottom = 69.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="YouDied" type="Label" parent="Screens/GameOver/VBoxContainer"]
 self_modulate = Color(0.8, 0, 0, 1)
@@ -101,9 +124,10 @@ layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Screens/GameOver/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 alignment = 1
 
-[node name="YouDied" type="Label" parent="Screens/GameOver/VBoxContainer/HBoxContainer"]
+[node name="Score" type="Label" parent="Screens/GameOver/VBoxContainer/HBoxContainer"]
 self_modulate = Color(0.95, 0.95, 0.95, 1)
 layout_mode = 2
 theme = ExtResource("2_qt4gd")
@@ -115,6 +139,12 @@ layout_mode = 2
 theme = ExtResource("2_qt4gd")
 text = "100"
 
+[node name="Restart" type="Button" parent="Screens/GameOver/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_qt4gd")
+theme_override_font_sizes/font_size = 24
+text = "RESTART"
+
 [node name="Win" type="Control" parent="Screens"]
 visible = false
 layout_mode = 1
@@ -123,6 +153,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="ColorRect" type="ColorRect" parent="Screens/Win"]
 layout_mode = 1
@@ -134,7 +165,7 @@ offset_left = -300.0
 offset_right = 300.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.485703, 0.485704, 0.485703, 0.392157)
+color = Color(0.486275, 0.486275, 0.486275, 0.658824)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Screens/Win"]
 layout_mode = 1
@@ -149,8 +180,9 @@ offset_right = 106.5
 offset_bottom = 69.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
-[node name="YouDied" type="Label" parent="Screens/Win/VBoxContainer"]
+[node name="YouWon" type="Label" parent="Screens/Win/VBoxContainer"]
 self_modulate = Color(0, 0.8, 0, 1)
 layout_mode = 2
 theme = ExtResource("2_qt4gd")
@@ -162,9 +194,10 @@ layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Screens/Win/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 alignment = 1
 
-[node name="YouDied" type="Label" parent="Screens/Win/VBoxContainer/HBoxContainer"]
+[node name="Time" type="Label" parent="Screens/Win/VBoxContainer/HBoxContainer"]
 self_modulate = Color(0.95, 0.95, 0.95, 1)
 layout_mode = 2
 theme = ExtResource("2_qt4gd")
@@ -178,12 +211,19 @@ text = "00:00:00"
 horizontal_alignment = 2
 vertical_alignment = 1
 
+[node name="Restart" type="Button" parent="Screens/Win/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_qt4gd")
+theme_override_font_sizes/font_size = 24
+text = "RESTART"
+
 [node name="TopBar" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 64.0
 grow_horizontal = 2
+mouse_filter = 2
 
 [node name="Color" type="ColorRect" parent="TopBar"]
 layout_mode = 1
@@ -224,35 +264,16 @@ text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TimerLabel" type="TimerLabel" parent="TopBar"]
-auto_start = true
-self_modulate = Color(0.237539, 0.237539, 0.237539, 1)
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -31.5
-offset_right = -10.0
-offset_bottom = 31.5
-grow_horizontal = 0
-grow_vertical = 2
-theme = ExtResource("2_qt4gd")
-text = "00:00:00"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="Record" type="Control" parent="."]
+[node name="Times" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Record"]
+[node name="Record" type="VBoxContainer" parent="Times"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -266,25 +287,47 @@ offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="YouDied" type="Label" parent="Record/VBoxContainer"]
+[node name="YouDied" type="Label" parent="Times/Record"]
 self_modulate = Color(0.0392157, 0.0392157, 0.0392157, 1)
 layout_mode = 2
 theme = ExtResource("2_qt4gd")
 text = "Personal best"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="Record/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="Times/Record"]
 layout_mode = 2
 
-[node name="TimerLabel" type="TimerLabel" parent="Record/VBoxContainer"]
+[node name="TimerLabel" type="TimerLabel" parent="Times/Record"]
 self_modulate = Color(0.29219, 0.29219, 0.29219, 1)
 layout_mode = 2
 theme = ExtResource("2_qt4gd")
 text = "00:00:00"
 horizontal_alignment = 1
 
-[connection signal="record_changed" from="ScoreManager" to="Screens/Win/VBoxContainer/HBoxContainer/TimerLabel" method="set_time"]
-[connection signal="record_changed" from="ScoreManager" to="Record/VBoxContainer/TimerLabel" method="set_time"]
+[node name="TimerLabel" type="TimerLabel" parent="Times"]
+auto_start = true
+self_modulate = Color(0.237539, 0.237539, 0.237539, 1)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 85.0
+offset_top = -83.0
+offset_right = 264.0
+offset_bottom = -20.0
+grow_vertical = 0
+theme = ExtResource("2_qt4gd")
+text = "00:00:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="record_changed" from="ScoreManager" to="Times/Record/TimerLabel" method="set_time"]
 [connection signal="score_changed" from="ScoreManager" to="Screens/GameOver/VBoxContainer/HBoxContainer/VariableLabel" method="set_integer"]
 [connection signal="score_changed" from="ScoreManager" to="TopBar/ScoreLabel" method="set_integer"]
-[connection signal="score_win" from="ScoreManager" to="Screens/Win" method="set_visible"]
+[connection signal="score_lose" from="ScoreManager" to="Screens" method="on_game_over"]
+[connection signal="score_win" from="ScoreManager" to="Screens/Win/VBoxContainer/HBoxContainer/TimerLabel" method="set_time"]
+[connection signal="score_win" from="ScoreManager" to="Screens" method="on_win_time"]
+[connection signal="on_restart" from="SubViewportContainer/SubViewport/RestartHandling" to="ScoreManager" method="restart"]
+[connection signal="on_restart" from="SubViewportContainer/SubViewport/RestartHandling" to="Screens" method="on_restart"]
+[connection signal="pressed" from="Screens/GameOver/VBoxContainer/Restart" to="SubViewportContainer/SubViewport/RestartHandling" method="restart"]
+[connection signal="pressed" from="Screens/Win/VBoxContainer/Restart" to="SubViewportContainer/SubViewport/RestartHandling" method="restart"]

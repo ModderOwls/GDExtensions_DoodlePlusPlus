@@ -22,10 +22,11 @@ namespace godot
 			void _process(double delta) override;
 			void _ready() override;
 
-            bool auto_start;
+            bool auto_start = false;
             
             void start_timer();
             void update_timer();
+            void restart_timer();
             void stop_timer();
 
             void set_time(const float value);

@@ -13,7 +13,7 @@ env = SConscript("godot-cpp/SConstruct")
 # - LINKFLAGS are for linking flags
 
 # tweak this if you want to use different folders, or more folders, to store your source code in.
-# Add a new Glob(<path>) for a new directory, couldn't figure out how to make it look for subdirectories automatically.
+# Add a new Glob(<path>) for new directories, couldn't figure out how to make it look for subdirectories automatically.
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp") + Glob("src/game_logic/*.cpp") + Glob("src/visuals/*.cpp") + Glob("src/visuals/ui/*.cpp")
 

@@ -18,6 +18,7 @@ PlayerPhysics::PlayerPhysics()
 	delta_physics_f = 0;
 
 	velocity = Vector2(0, 0);
+	invincibility_frames = 100;
 }
 
 PlayerPhysics::~PlayerPhysics() { }
@@ -48,6 +49,9 @@ void PlayerPhysics::_ready()
 
 	sound_manager = SoundManager::get_instance();
 	score_manager = ScoreManager::get_instance();
+
+	//Make it look like he just jumped into screen at the start.
+	velocity.y = -jump_height * 1.3f; 
 }
 
 void PlayerPhysics::_physics_process(double delta)
@@ -59,13 +63,7 @@ void PlayerPhysics::_physics_process(double delta)
 	//Update physics.
 	set_position(get_position() + velocity * delta_physics_f);
 
-	//Get new highest position and add to the score.
-	if (get_position().y < highest_point)
-	{
-		if (score_manager != nullptr) score_manager->add_score(highest_point - get_position().y);
-
-		highest_point = get_position().y;
-	}
+	detect_height();
 }
 
 void PlayerPhysics::movement_air()
@@ -101,23 +99,61 @@ void PlayerPhysics::movement_air()
 
 	velocity.y += gravity * delta_physics_f;
 
-	//Perform raycast.
-	Dictionary ray = push_raycast(position, Vector2(0, height / 2 + .1f));
+	//Perform raycasts.
+	Dictionary rayL = push_raycast(position, Vector2(-height / 2, height / 2 + .1f));
+	Dictionary rayR = push_raycast(position, Vector2(height / 2, height / 2 + .1f));
 
 	//Detect for a floor only when going down.
-	if (!ray.is_empty() && velocity.y >= 0)
+	if (velocity.y >= 0)
 	{
-		on_floor_hit(ray);
+		if (!rayL.is_empty())
+		{
+			on_floor_hit(rayL, -height / 2);
+		}
+		else if (!rayR.is_empty())
+		{
+			on_floor_hit(rayR, height / 2);
+		}
 	}
 }
 
-void PlayerPhysics::on_floor_hit(Dictionary& ray)
+void PlayerPhysics::detect_height()
+{
+	//Get new highest position and add to the score.
+	if (get_position().y < highest_point)
+	{
+		if (score_manager != nullptr) score_manager->add_score(highest_point - get_position().y);
+
+		highest_point = get_position().y;
+	}
+
+	//Just for the intro where he jumps up, gives a short duration where you wont die so you cannot die in the 'cutscene'.
+	if (invincibility_frames > 0)
+	{
+		invincibility_frames--;
+
+		return;
+	}
+
+	//Detects if you're below the highest point + camera height, and kills you if so. 
+	if (get_position().y > highest_point + 72 + height)
+	{
+		set_process(false);
+		set_physics_process(false);
+
+		if (sound_manager != nullptr) sound_manager->play_sound("Death");
+
+		if (score_manager != nullptr) score_manager->death();
+	}
+}
+
+void PlayerPhysics::on_floor_hit(Dictionary& ray, const float offset_x)
 {
 	velocity.y = -jump_height;
 
 	if (sound_manager != nullptr) sound_manager->play_sound("Jump");
 
-	Node2D::set_position((Vector2)ray["position"] + Vector2(0, -1) * height / 2);
+	Node2D::set_position((Vector2)ray["position"] + Vector2(0, -1) * height / 2 - Vector2(offset_x, 0));
 }
 
 void PlayerPhysics::_unhandled_input(const Ref<InputEvent> &input)

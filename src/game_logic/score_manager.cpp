@@ -3,6 +3,7 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/json.hpp>
+#include "../visuals/sound_manager.h"
 
 using namespace godot;
 
@@ -63,10 +64,41 @@ void ScoreManager::detect_win()
 
 				emit_signal("record_changed", record_time);
 			}
+
+			timer_label->stop_timer();
+			
+			SoundManager::get_instance()->play_sound("Win");
+
+			emit_signal("score_win", time);
+
+			return;
 		}
 
-		emit_signal("score_win", true);
+		emit_signal("score_win", 0);
     }
+}
+
+void ScoreManager::restart()
+{
+	score = 0;
+
+	emit_signal("score_changed", score);
+
+	if (timer_label != nullptr)
+	{
+		timer_label->set_time(0);
+		timer_label->start_timer();
+	}
+}
+
+void ScoreManager::death()
+{
+	//Pause the game.
+	Engine::get_singleton()->set_time_scale(0);
+
+	if (timer_label != nullptr) timer_label->stop_timer();
+
+	emit_signal("score_lose");
 }
 
 
@@ -82,20 +114,22 @@ void ScoreManager::_bind_methods()
 	ClassDB::bind_method(D_METHOD("get_timer_label"), &ScoreManager::get_timer_label);
 	ClassDB::bind_method(D_METHOD("set_timer_label", "new_timer_label"), &ScoreManager::set_timer_label);
 
+	ClassDB::bind_method(D_METHOD("restart"), &ScoreManager::restart);
+
 	
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "win_amount"), "set_win_amount", "get_win_amount");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "timer_label", PROPERTY_HINT_NODE_TYPE, "TimerLabel"), "set_timer_label", "get_timer_label");
 
 
 	//Add signals for when you win or lose.
-    ADD_SIGNAL(MethodInfo("score_win", PropertyInfo(Variant::BOOL, "won")));
-    ADD_SIGNAL(MethodInfo("score_changed", PropertyInfo(Variant::INT, "new_score")));
-    ADD_SIGNAL(MethodInfo("score_lose", PropertyInfo(Variant::BOOL, "lost")));
+    ADD_SIGNAL(MethodInfo("score_win", PropertyInfo(Variant::FLOAT, "time")));  
+    ADD_SIGNAL(MethodInfo("score_changed", PropertyInfo(Variant::FLOAT, "new_score")));
+    ADD_SIGNAL(MethodInfo("score_lose"));
 
     ADD_SIGNAL(MethodInfo("record_changed", PropertyInfo(Variant::FLOAT, "new_record")));
 }
 
-void ScoreManager::add_score(int amount) 
+void ScoreManager::add_score(const float amount) 
 {
     score += amount;
 
@@ -126,17 +160,19 @@ void ScoreManager::save_record_time()
 	String json_string = json->stringify(data);
 
 	//Write the JSON string to the file.
-	Ref<FileAccess> file = FileAccess::open("user://record_time.json", FileAccess::WRITE);
+	//Also uses encryption, im not sure if we were supposed to use anything else for encryption? I cant refind it atleast.. :(
+	Ref<FileAccess> file = FileAccess::open_encrypted_with_pass("user://record_time.json", FileAccess::WRITE, "evil password");
 	if (file.is_valid()) 
 	{
 		file->store_string(json_string);
 		file->close();
 	}
 }
+
 void ScoreManager::load_record_time() 
 {
 	//Load last record time if it exists.
-	Ref<FileAccess> file = FileAccess::open("user://record_time.json", FileAccess::READ);
+	Ref<FileAccess> file = FileAccess::open_encrypted_with_pass("user://record_time.json", FileAccess::READ, "evil password");
 
 	if (file.is_valid()) 
 	{

@@ -14,7 +14,8 @@ namespace godot
 
 	private:
 		void movement_air();
-		void on_floor_hit(Dictionary& ray);
+		void detect_height();
+		void on_floor_hit(Dictionary& ray, const float offset_x);
 
 		Dictionary push_raycast(Vector2 from, Vector2 to);
 
@@ -26,6 +27,7 @@ namespace godot
 
 		float highest_point = 0;
 
+		int invincibility_frames;
 		float delta_physics_f;
 
 	protected:

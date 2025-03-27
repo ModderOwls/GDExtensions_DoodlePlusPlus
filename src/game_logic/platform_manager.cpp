@@ -16,7 +16,19 @@ PlatformManager::PlatformManager()
 	next_platform = 0;
 }
 
-PlatformManager::~PlatformManager() { }
+PlatformManager::~PlatformManager()
+{
+	//Cleanup both pooled and active platforms if destroyed.
+	for (int i = 0; i < active_platforms.size(); ++i)
+	{
+		active_platforms[i]->queue_free();
+	}
+	
+	for (int i = 0; i < pool_platforms.size(); ++i)
+	{
+		pool_platforms[i]->queue_free();
+	}
+}
 
 
 void PlatformManager::_ready()
@@ -69,7 +81,8 @@ void PlatformManager::_physics_process(double delta)
 
 		Node2D* newPlatform = get_platform();
 
-		newPlatform->set_global_position(get_global_position() + Vector2(1, 0) * rng->randf_range(-spawn_width, spawn_width));
+		//Set the platform's position and round it to be pixel perfect.
+		newPlatform->set_global_position(get_global_position() + Vector2(1, 0) * Math::round(rng->randf_range(-spawn_width, spawn_width)));
 
 		active_platforms.push_back(newPlatform);
 	}
@@ -180,6 +193,7 @@ void PlatformManager::_bind_methods()
 	
 	ClassDB::bind_method(D_METHOD("get_spawn_rate"), &PlatformManager::get_spawn_rate);
 	ClassDB::bind_method(D_METHOD("set_spawn_rate", "new_spawn_rate"), &PlatformManager::set_spawn_rate);
+
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "platform_prefab", PROPERTY_HINT_RESOURCE_TYPE, "PackedScene"), "set_platform_prefab", "get_platform_prefab");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "spawn_width"), "set_spawn_width", "get_spawn_width");

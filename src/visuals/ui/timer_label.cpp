@@ -76,6 +76,12 @@ void TimerLabel::update_timer()
     set_text(minutes + ":" + seconds + ":" + milli);
 }
 
+void TimerLabel::restart_timer()
+{
+	set_time(0);
+	start_timer();
+}
+
 void TimerLabel::stop_timer()
 {
     set_process(false);

@@ -1,48 +1,63 @@
 [gd_scene load_steps=7 format=3 uid="uid://de1liuwb3q8qn"]
 
 [ext_resource type="PackedScene" uid="uid://cq1rcy7eebmnb" path="res://Scenes/Player.tscn" id="1_on1sj"]
-[ext_resource type="Texture2D" uid="uid://ny65wbkxvjge" path="res://icon.svg" id="2_okeag"]
+[ext_resource type="Texture2D" uid="uid://bhvoxd1kox85h" path="res://Sprites/PlatformWide.png" id="2_4adys"]
 [ext_resource type="PackedScene" uid="uid://ch7n6nxxek1yl" path="res://Scenes/Platform.tscn" id="3_uth3n"]
-[ext_resource type="AudioStream" uid="uid://ttq1g7e8trmj" path="res://Sounds/Jump.wav" id="4_7ia74"]
-[ext_resource type="AudioStream" uid="uid://dhp020380ayu1" path="res://Sounds/Music.wav" id="4_gh7rf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y7r2v"]
-size = Vector2(100, 20)
+size = Vector2(80, 6)
+
+[sub_resource type="Gradient" id="Gradient_u780i"]
+offsets = PackedFloat32Array(0.0974026, 0.792208)
+colors = PackedColorArray(0.255659, 0.255659, 0.255659, 1, 0.454524, 0.454524, 0.454524, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_t0bf3"]
+gradient = SubResource("Gradient_u780i")
 
 [node name="Main" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_on1sj")]
+position = Vector2(0, 90)
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="Start" type="StaticBody2D" parent="."]
 collision_layer = 3
 collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Start"]
 position = Vector2(0, 40)
 shape = SubResource("RectangleShape2D_y7r2v")
 
-[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionShape2D"]
+[node name="Sprite" type="Sprite2D" parent="Start/CollisionShape2D"]
 position = Vector2(0, 9.53674e-07)
-scale = Vector2(0.78, 0.155)
-texture = ExtResource("2_okeag")
+scale = Vector2(80, 1)
+texture = ExtResource("2_4adys")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(73, 1)
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Start"]
+position = Vector2(50, 10)
 shape = SubResource("RectangleShape2D_y7r2v")
 
-[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionShape2D2"]
+[node name="Sprite" type="Sprite2D" parent="Start/CollisionShape2D2"]
 position = Vector2(0, 9.53674e-07)
-scale = Vector2(0.78, 0.155)
-texture = ExtResource("2_okeag")
+scale = Vector2(80, 1)
+texture = ExtResource("2_4adys")
 
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(-49, -35)
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Start"]
+position = Vector2(-50, -20)
 shape = SubResource("RectangleShape2D_y7r2v")
 
-[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionShape2D3"]
+[node name="Sprite" type="Sprite2D" parent="Start/CollisionShape2D3"]
 position = Vector2(0, 9.53674e-07)
-scale = Vector2(0.78, 0.155)
-texture = ExtResource("2_okeag")
+scale = Vector2(80, 1)
+texture = ExtResource("2_4adys")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Start"]
+position = Vector2(50, -50)
+shape = SubResource("RectangleShape2D_y7r2v")
+
+[node name="Sprite" type="Sprite2D" parent="Start/CollisionShape2D4"]
+position = Vector2(0, 9.53674e-07)
+scale = Vector2(80, 1)
+texture = ExtResource("2_4adys")
 
 [node name="Camera" type="CameraChaseHandler" parent="." node_paths=PackedStringArray("target_follow")]
 target_follow = NodePath("../Player")
@@ -54,9 +69,8 @@ spawn_width = 45.0
 spawn_rate = 18.0
 position = Vector2(0, -65)
 
-[node name="SoundManager" type="SoundManager" parent="."]
-music = ExtResource("4_gh7rf")
-sound_library = {
-"Jump": ExtResource("4_7ia74")
-}
-process_priority = -100
+[node name="Sprite2D" type="Sprite2D" parent="Camera"]
+z_index = -100
+rotation = -1.5708
+scale = Vector2(1, 120)
+texture = SubResource("GradientTexture1D_t0bf3")

@@ -13,7 +13,7 @@ namespace godot
 		private:
 			static ScoreManager* instance;
 
-            int score = 0;
+            float score = 0;
 
 			float win_amount = 100;
 			float record_time = 0;
@@ -32,8 +32,10 @@ namespace godot
 			static ScoreManager* get_instance();
         
             void detect_win();
+			void restart();
+			void death();
 
-            void add_score(int amount);
+            void add_score(const float amount);
             int get_score() const;
 
 			void set_win_amount(const float new_win_amount);

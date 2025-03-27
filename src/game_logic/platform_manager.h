@@ -41,7 +41,7 @@ namespace godot
 
 			std::vector<Node2D*> pool_platforms;
 			std::vector<Node2D*> active_platforms;
-			Ref<PackedScene> platform_prefab;
+			Ref<PackedScene> platform_prefab = nullptr;
 
 			Ref<RandomNumberGenerator> rng;
 
