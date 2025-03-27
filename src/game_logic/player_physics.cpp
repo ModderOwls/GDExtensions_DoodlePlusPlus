@@ -27,22 +27,26 @@ void PlayerPhysics::_ready()
 {
 	Engine *engine = Engine::get_singleton();
 
-	//Set up raycast variables.
-	//Assuming it's like Godot C#/.Net, setting this every frame/tick creates garbage.
-	spaceState = CanvasItem::get_world_2d()->get_direct_space_state();
-	query = PhysicsRayQueryParameters2D::create(Vector2(0, 0), Vector2(0, -1), rayMask);
-
 	//Ensure it doesn't run in the editor.
 	if (engine->is_editor_hint())
 	{
 		set_process(false);
 		set_physics_process(false);
+
+		return;
 	}
 	else
 	{
 		set_process(true);
 		set_physics_process(true);
 	}
+
+	//Set up raycast variables.
+	//Assuming it's like Godot C#/.Net, setting this every frame/tick creates garbage.
+	spaceState = CanvasItem::get_world_2d()->get_direct_space_state();
+	query = PhysicsRayQueryParameters2D::create(Vector2(0, 0), Vector2(0, -1), rayMask);
+
+	sound_manager = SoundManager::get_instance();
 }
 
 void PlayerPhysics::_physics_process(double delta)
@@ -101,6 +105,8 @@ void PlayerPhysics::movement_air()
 void PlayerPhysics::on_floor_hit(Dictionary& ray)
 {
 	velocity.y = -jump_height;
+
+	if (sound_manager != nullptr) sound_manager->play_sound("Jump");
 
 	Node2D::set_position((Vector2)ray["position"] + Vector2(0, -1) * height / 2);
 }

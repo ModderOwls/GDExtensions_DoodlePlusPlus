@@ -59,10 +59,6 @@ void PlatformManager::_ready()
 	}
 }
 
-void PlatformManager::_process(double delta)
-{
-}
-
 void PlatformManager::_physics_process(double delta)
 {
 	next_platform += last_position.y - get_global_position().y;
@@ -83,13 +79,8 @@ void PlatformManager::_physics_process(double delta)
 		float offset = get_position().y * 2;
 
 		//Despawn platforms if below the screen.
-		if (active_platforms[i]->get_global_position().y > get_global_position().y - offset)
+		if (active_platforms[i]->get_global_position().y > get_global_position().y - offset + 30)
 		{
-			print_line(active_platforms[i]->get_global_position().y);
-			print_line(get_global_position().y);
-			print_line(-offset);
-			print_line("");
-
 			Node2D* platform = active_platforms[i];
 
 			active_platforms.erase(active_platforms.begin() + i);

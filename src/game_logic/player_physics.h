@@ -3,6 +3,7 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/node2d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
+#include "../visuals/sound_manager.h"
 
 namespace godot 
 {
@@ -15,6 +16,8 @@ namespace godot
 		void on_floor_hit(Dictionary& ray);
 
 		Dictionary push_raycast(Vector2 from, Vector2 to);
+
+		SoundManager* sound_manager = nullptr;
 
 		float input_left = 0;
 		float input_right = 0;

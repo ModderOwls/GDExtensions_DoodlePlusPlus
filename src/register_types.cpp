@@ -3,7 +3,9 @@
 #include "game_logic/player_physics.h"
 #include "game_logic/camera_chase_handler.h"
 #include "game_logic/platform_manager.h"
+#include "game_logic/score_handler.h"
 #include "visuals/tick_interpolation.h"
+#include "visuals/sound_manager.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -19,8 +21,10 @@ void initialize_example_module(ModuleInitializationLevel p_level)
 
 	GDREGISTER_CLASS(PlayerPhysics);
 	GDREGISTER_CLASS(CameraChaseHandler);
-	GDREGISTER_CLASS(TickInterpolation);
 	GDREGISTER_CLASS(PlatformManager);
+	GDREGISTER_CLASS(ScoreHandler);
+	GDREGISTER_CLASS(TickInterpolation);
+	GDREGISTER_CLASS(SoundManager);
 }
 
 void uninitialize_example_module(ModuleInitializationLevel p_level) 
