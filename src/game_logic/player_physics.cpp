@@ -47,6 +47,7 @@ void PlayerPhysics::_ready()
 	query = PhysicsRayQueryParameters2D::create(Vector2(0, 0), Vector2(0, -1), rayMask);
 
 	sound_manager = SoundManager::get_instance();
+	score_manager = ScoreManager::get_instance();
 }
 
 void PlayerPhysics::_physics_process(double delta)
@@ -56,7 +57,15 @@ void PlayerPhysics::_physics_process(double delta)
 	movement_air();
 
 	//Update physics.
-	Node2D::set_position(Node2D::get_position() + velocity * delta_physics_f);
+	set_position(get_position() + velocity * delta_physics_f);
+
+	//Get new highest position and add to the score.
+	if (get_position().y < highest_point)
+	{
+		if (score_manager != nullptr) score_manager->add_score(highest_point - get_position().y);
+
+		highest_point = get_position().y;
+	}
 }
 
 void PlayerPhysics::movement_air()

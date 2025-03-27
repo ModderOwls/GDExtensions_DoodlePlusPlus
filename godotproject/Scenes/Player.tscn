@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cq1rcy7eebmnb"]
+
+[ext_resource type="Texture2D" uid="uid://4w5i66nw5r4" path="res://Sprites/BoxGuy.png" id="1_pq5i2"]
+
+[node name="Player" type="PlayerPhysics"]
+gravity = 85.0
+
+[node name="TickInterpolation" type="TickInterpolation" parent="."]
+
+[node name="Sprite" type="Sprite2D" parent="TickInterpolation"]
+texture = ExtResource("1_pq5i2")

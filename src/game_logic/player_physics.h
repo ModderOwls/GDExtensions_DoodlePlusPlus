@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/node2d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include "../visuals/sound_manager.h"
+#include "score_manager.h"
 
 namespace godot 
 {
@@ -18,9 +19,12 @@ namespace godot
 		Dictionary push_raycast(Vector2 from, Vector2 to);
 
 		SoundManager* sound_manager = nullptr;
+		ScoreManager* score_manager = nullptr;
 
 		float input_left = 0;
 		float input_right = 0;
+
+		float highest_point = 0;
 
 		float delta_physics_f;
 

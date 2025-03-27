@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://de1liuwb3q8qn"]
 
-[ext_resource type="Texture2D" uid="uid://4w5i66nw5r4" path="res://BoxGuy.png" id="1_7fdr4"]
+[ext_resource type="PackedScene" uid="uid://cq1rcy7eebmnb" path="res://Scenes/Player.tscn" id="1_on1sj"]
 [ext_resource type="Texture2D" uid="uid://ny65wbkxvjge" path="res://icon.svg" id="2_okeag"]
 [ext_resource type="PackedScene" uid="uid://ch7n6nxxek1yl" path="res://Scenes/Platform.tscn" id="3_uth3n"]
 [ext_resource type="AudioStream" uid="uid://ttq1g7e8trmj" path="res://Sounds/Jump.wav" id="4_7ia74"]
@@ -11,13 +11,7 @@ size = Vector2(100, 20)
 
 [node name="Main" type="Node2D"]
 
-[node name="Player" type="PlayerPhysics" parent="."]
-
-[node name="TickInterpolation" type="TickInterpolation" parent="Player"]
-
-[node name="Sprite" type="Sprite2D" parent="Player/TickInterpolation"]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("1_7fdr4")
+[node name="Player" parent="." instance=ExtResource("1_on1sj")]
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 collision_layer = 3
@@ -51,13 +45,12 @@ scale = Vector2(0.78, 0.155)
 texture = ExtResource("2_okeag")
 
 [node name="Camera" type="CameraChaseHandler" parent="." node_paths=PackedStringArray("target_follow")]
-target_follow = NodePath("../Player/TickInterpolation/Sprite")
+target_follow = NodePath("../Player")
 lock_x = true
-zoom = Vector2(5, 5)
 
 [node name="PlatformManager" type="PlatformManager" parent="Camera"]
 platform_prefab = ExtResource("3_uth3n")
-spawn_width = 60.0
+spawn_width = 45.0
 spawn_rate = 18.0
 position = Vector2(0, -65)
 
